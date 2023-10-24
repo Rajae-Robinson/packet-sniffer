@@ -5,6 +5,9 @@ class PacketSnifferController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.packet_data = []
+        self.filter_by = 'src'  # Default filter by source IP
+        self.filter_ip = None
 
         self.view.set_start_button_command(self.start_capture)
         self.view.set_stop_button_command(self.stop_capture)
@@ -15,7 +18,7 @@ class PacketSnifferController:
     def start_capture(self):
         self.view.start_button.configure(state='disabled')
         self.view.stop_button.configure(state='normal')
-        self.view.filter_button.configure(state='disabled')
+        #self.view.filter_button.configure(state='disabled')
 
         def process_packet(packet):
             if packet.haslayer('IP'):
@@ -40,7 +43,28 @@ class PacketSnifferController:
 
         # Wait for the sniffer thread to finish
         # sniffer_thread.join()
+        
+        
+    def set_filter_by(self, filter_by):
+        self.filter_by = filter_by
 
+    def set_filter_ip(self, filter_ip):
+        self.filter_ip = filter_ip
+
+    def add_packet(self, packet):
+        src_ip = packet['IP'].src
+        dst_ip = packet['IP'].dst
+        protocol = packet['IP'].proto
+        payload = packet['IP'].payload
+
+        if self.filter_by == 'src' and src_ip == self.filter_ip:
+            self.packet_data.append([src_ip, dst_ip, protocol, payload])
+        elif self.filter_by == 'dst' and dst_ip == self.filter_ip:
+            self.packet_data.append([src_ip, dst_ip, protocol, payload])
+            
     def apply_filter(self):
         filter_ip = self.view.get_ip_filter()
-        # Use filter_ip in your packet filtering logic
+        filter_type = self.view.get_filter_type()
+        self.model.set_filter_by(filter_type)
+        self.model.set_filter_ip(filter_ip)
+        # Used filter_ip in the packet filtering logic (Check)

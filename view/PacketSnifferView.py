@@ -19,16 +19,33 @@ class PacketSnifferView:
         self.ip_filter_entry = ttk.Entry(master)
         self.ip_filter_entry.pack()
 
+        #filter
+        self.filter_type_var = tk.StringVar(value='src')
+        ttk.Radiobutton(master, text="Source IP", variable=self.filter_type_var, value='src').pack()
+        ttk.Radiobutton(master, text="Destination IP", variable=self.filter_type_var, value='dst').pack()
+        
         self.filter_button = ttk.Button(master, text="Apply Filter")
+        
         self.filter_button.pack(pady=10)
 
         # Create a Treeview widget for displaying packet data
-        self.tree = ttk.Treeview(master, columns=("Source IP", "Destination IP", "Protocol", "Payload"), show="headings")
+        #added scrollbar
+        tree_frame = tk.Frame(master)
+        tree_frame.pack(padx=10, pady=10)
+
+        tree_scrollbar = ttk.Scrollbar(tree_frame)
+        tree_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.tree = ttk.Treeview(tree_frame, columns=("Source IP", "Destination IP", "Protocol", "Payload"), show="headings", yscrollcommand=tree_scrollbar.set)
         self.tree.heading("Source IP", text="Source IP")
         self.tree.heading("Destination IP", text="Destination IP")
         self.tree.heading("Protocol", text="Protocol")
         self.tree.heading("Payload", text="Payload")
+        self.tree.pack(side=tk.LEFT)
+
+        tree_scrollbar.config(command=self.tree.yview)
         self.tree.pack(padx=10, pady=10)
+        
 
     def set_start_button_command(self, command):
         self.start_button.configure(command=command)
@@ -44,3 +61,11 @@ class PacketSnifferView:
 
     def insert_tree_item(self, values):
         self.tree.insert("", "end", values=values)
+        
+    def get_filter_type(self):
+        return self.filter_type_var.get()
+    
+    def insert_tree_item(self, values):
+        item_id = self.tree.insert("", "end", values=values)
+    # Auto-scroll to the newest entry
+        self.tree.see(item_id)
