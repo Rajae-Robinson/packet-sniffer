@@ -1,14 +1,15 @@
 import threading
 from scapy.all import sniff
+from model.PacketModel import PacketModel
 
 class PacketSnifferController:
-    def __init__(self, model, view):
-        self.model = model
+    def __init__(self, view):
+        self.model = PacketModel()
         self.view = view
         self.packet_data = []
         self.filter_by = ''  
         self.filter_value = ''
-
+    
         self.view.start_button.set_command(self.start_capture)
         self.view.stop_button.set_command(self.stop_capture)
         self.view.filter.set_button_command(self.apply_filter)
