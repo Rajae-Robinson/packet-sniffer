@@ -1,4 +1,5 @@
 # LoginView.py
+import html
 import tkinter as tk
 from controller.AuthController import AuthController
 
@@ -6,6 +7,7 @@ class LoginView:
     def __init__(self, master):
         self.master = master
         self.master.title("Login")
+        self.master.geometry("300x200")
 
         self.username_label = tk.Label(master, text="Username")
         self.username_entry = tk.Entry(master)
@@ -16,8 +18,11 @@ class LoginView:
         self.login_button = tk.Button(master, text="Login", command=self.login)
 
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        # Escape HTML characters
+        username = html.escape(self.username_entry.get())
+        password = html.escape(self.password_entry.get())
+        print(username)
+        print(password)
         auth_controller = AuthController()
         auth_controller.login(self.master, username, password)
 
