@@ -1,5 +1,6 @@
 from tkinter import messagebox
 import csv
+import logging
 
 class PacketModel:
     def __init__(self):
@@ -15,8 +16,10 @@ class PacketModel:
             self.packet_data.append((src_ip, dst_ip, protocol, payload))
         except KeyError as e:
             print(f"KeyError: {e} not found in packet  ")
+            logging.error(e)
         except Exception as e:
             print(f"An error occurred: {e}")
+            logging.error(e)
             
     def save_to_csv(self, filename):
         try:
@@ -25,3 +28,4 @@ class PacketModel:
                 writer.writerows(self.packet_data)
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save captured packets: {e}")
+            logging.error(e)
