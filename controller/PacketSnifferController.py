@@ -1,4 +1,5 @@
 import threading
+import logging
 from scapy.all import sniff
 from model.PacketModel import PacketModel
 
@@ -18,6 +19,7 @@ class PacketSnifferController:
             self.stop_event = threading.Event()  # Create an event flag
         except Exception as e:
             print(f"An error occurred in __init__: {e}")
+            logging.error(e)
 
     def start_capture(self):
         try:
@@ -44,6 +46,7 @@ class PacketSnifferController:
             sniffer_thread.start()
         except Exception as e:
             print(f"An error occurred in start_capture: {e}")
+            logging.error(e)
 
     def stop_capture(self):
         try:
@@ -58,18 +61,21 @@ class PacketSnifferController:
             self.model.save_to_csv('captured_packets.csv')
         except Exception as e:
             print(f"An error occurred while trying to stop: {e}")
+            logging.error(e)
 
     def set_filter_by(self, filter_by):
         try:
             self.filter_by = filter_by
         except Exception as e:
             print("An error occurred while trying to set filter: {e}")
+            logging.error(e)
 
     def set_filter_value(self, value):
         try:
             self.filter_value = value
         except Exception as e:
             print("An error occurred while trying to set filter: {e}")
+            logging.error(e)
             
     def apply_filter(self):
         try: 
@@ -79,3 +85,4 @@ class PacketSnifferController:
             self.set_filter_value(filter_value)
         except Exception as e:
             print("An error occurred while trying to apply filter: {e}")
+            logging.error(e)
