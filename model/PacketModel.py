@@ -1,3 +1,4 @@
+from tkinter import messagebox
 import csv
 
 class PacketModel:
@@ -18,11 +19,9 @@ class PacketModel:
             print(f"An error occurred: {e}")
             
     def save_to_csv(self, filename):
-        try: 
+        try:
             with open(filename, mode='w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerows(self.packet_data)
-        except FileNotFoundError:
-            print(f"File not found: {filename}")
         except Exception as e:
-            print(f"An error occurred: {e}")  
+            messagebox.showerror("Error", f"Failed to save captured packets: {e}")
