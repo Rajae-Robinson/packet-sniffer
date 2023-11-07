@@ -5,14 +5,24 @@ class PacketModel:
         self.packet_data = []
 
     def add_packet(self, packet):
-        src_ip = packet['IP'].src
-        dst_ip = packet['IP'].dst
-        protocol = packet['IP'].proto
-        payload = packet['IP'].payload
-        
-        self.packet_data.append((src_ip, dst_ip, protocol, payload))
-
+        try: 
+            src_ip = packet['IP'].src
+            dst_ip = packet['IP'].dst
+            protocol = packet['IP'].proto
+            payload = packet['IP'].payload
+            
+            self.packet_data.append((src_ip, dst_ip, protocol, payload))
+        except KeyError as e:
+            print(f"KeyError: {e} not found in packet  ")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            
     def save_to_csv(self, filename):
-        with open(filename, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(self.packet_data)
+        try: 
+            with open(filename, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(self.packet_data)
+        except FileNotFoundError:
+            print(f"File not found: {filename}")
+        except Exception as e:
+            print(f"An error occurred: {e}")  
