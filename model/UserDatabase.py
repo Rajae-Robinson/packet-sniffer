@@ -4,30 +4,48 @@ import bcrypt
 
 class UserDatabase:
     def __init__(self):
-        self.connection = sqlite3.connect('user_db.db')
-        self.cursor = self.connection.cursor()
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                username TEXT PRIMARY KEY,
-                password TEXT
-            )
-        ''')
-        self.connection.commit()
+        try:
+            self.connection = sqlite3.connect('user_db.db')
+            self.cursor = self.connection.cursor()
+            self.cursor.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    username TEXT PRIMARY KEY,
+                    password TEXT
+                )
+            ''')
+            self.connection.commit()
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
 
     def add_user(self, username, password):
-        password = self.hash_password(password)
-        self.cursor.execute('INSERT OR REPLACE INTO users (username, password) VALUES (?, ?)', (username, password))
-        self.connection.commit()
+        try:
+            password = self.hash_password(password)
+            self.cursor.execute('INSERT OR REPLACE INTO users (username, password) VALUES (?, ?)', (username, password))
+            self.connection.commit()
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
 
     def get_password(self, username):
-        self.cursor.execute('SELECT password FROM users WHERE username=?', (username,))
-        return self.cursor.fetchone()
+        try:
+            self.cursor.execute('SELECT password FROM users WHERE username=?', (username,))
+            return self.cursor.fetchone()
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
     
     def hash_password(self, password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        try:
+            return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
 
     def check_password(self, password, hashed):
-        return bcrypt.checkpw(password.encode('utf-8'), hashed)
+        try:
+            return bcrypt.checkpw(password.encode('utf-8'), hashed)
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
 
     def close(self):
-        self.connection.close()
+        try:
+            self.connection.close()
+        except sqlite3.Error as sq:
+            print("Error: {sq}")
