@@ -16,6 +16,7 @@ class LoginView:
         self.password_entry = tk.Entry(master, show='*')
 
         self.login_button = tk.Button(master, text="Login", command=self.login)
+        self.master.protocol("WM_DELETE_WINDOW", self.master.quit)
 
     def login(self):
         # Escape HTML characters
