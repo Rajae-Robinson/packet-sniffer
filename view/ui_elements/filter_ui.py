@@ -13,7 +13,7 @@ class FilterUI:
         self.filter_entry = ttk.Entry(master)
         self.filter_entry.pack()
 
-        self.filter_button = ttk.Button(master, text="Apply Filter")
+        self.filter_button = tk.Button(master, text="Apply Filter", background='old lace')
         self.filter_button.pack(pady=10)
 
     def set_button_command(self, command):

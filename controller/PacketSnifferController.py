@@ -1,4 +1,6 @@
 import threading
+import ipaddress
+from tkinter import messagebox
 from scapy.all import sniff
 
 class PacketSnifferController:
@@ -32,6 +34,7 @@ class PacketSnifferController:
                 
                 self.model.add_packet(packet)
                 self.view.table.insert_item((packet['IP'].src, packet['IP'].dst, packet['IP'].proto, packet['IP'].payload))
+            
 
         # Start packet capturing in a separate thread
         self.stop_event.clear()  # Clear the event flag before capturing
@@ -54,9 +57,30 @@ class PacketSnifferController:
 
     def set_filter_value(self, value):
         self.filter_value = value
-            
+        '''while value > '255':
+               try:
+                    print("Invalid Input Entered!")
+               except: 
+                    print("Something went wrong.")   
+               else:
+                   self.filter_value == value
+        if value == str:
+            print("Data type of Input is Invalid. Enter an integer instead!") '''
+
+
     def apply_filter(self):
         filter_type = self.view.filter.get_filter_type()
         filter_value = self.view.filter.get_filter_value()
+        if filter_type in ['src', 'dst']:
+            try:
+                ipaddress.IPv4Address(filter_value)
+                return True
+            except ValueError:
+                messagebox.showerror("Invalid IP Address", "Please enter a valid IP address.")
+                return
+        if filter_type == 'proto' and not(filter_value.isdigit()):
+            messagebox.showerror("Invalid Protocol", "Protocol should be a number.")
+            return
+
         self.set_filter_by(filter_type)
         self.set_filter_value(filter_value)
