@@ -1,4 +1,3 @@
-# LoginView.py
 import html
 import tkinter as tk
 from controller.AuthController import AuthController
