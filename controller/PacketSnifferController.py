@@ -112,7 +112,6 @@ class PacketSnifferController:
             if filter_type in ['src', 'dst']:
                 try:
                     ipaddress.IPv4Address(filter_value)
-                    return True
                 except ValueError:
                     messagebox.showerror("Invalid IP Address", "Please enter a valid IP address.")
                     return
